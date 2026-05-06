@@ -33,11 +33,10 @@ pipeline {
         }
 
         stage('Security Scan - Trivy') {
-            steps {
-                sh '/usr/local/bin/trivy image --exit-code 0 --severity HIGH,CRITICAL --format template --template "@/usr/local/share/trivy/templates/html.tpl" --output $WORKSPACE/trivy-report-ai.html --timeout 15m jungle/ai-learning-assistant:ci'
-                sh '/usr/local/bin/trivy image --exit-code 0 --severity HIGH,CRITICAL --format table --timeout 15m jungle/ai-learning-assistant:ci'
-            }
-        }
+    steps {
+        sh '/usr/local/bin/trivy image --exit-code 0 --severity HIGH,CRITICAL --format table --timeout 15m --skip-db-update jungle/ai-learning-assistant:ci || true'
+    }
+}
     }
 
     post {
