@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collaboration-room
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: collaboration-room
+  template:
+    metadata:
+      labels:
+        app: collaboration-room
+    spec:
+      containers:
+      - name: collaboration-room
+        image: wissal93/collaboration-room:latest
+        ports:
+        - containerPort: 8083
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://mysql:3306/jungle_db?createDatabaseIfNotExist=true"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "root"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "root"
+        - name: EUREKA_CLIENT_ENABLED
+          value: "false"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: collaboration-room-svc
+spec:
+  selector:
+    app: collaboration-room
+  ports:
+  - port: 8083
+    targetPort: 8083
+    nodePort: 30083
+  type: NodePort

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-learning-assistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-learning-assistant
+  template:
+    metadata:
+      labels:
+        app: ai-learning-assistant
+    spec:
+      containers:
+      - name: ai-learning-assistant
+        image: wissal93/ai-learning-assistant:latest
+        ports:
+        - containerPort: 8086
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://mysql:3306/jungle_db?createDatabaseIfNotExist=true"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "root"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "root"
+        - name: EUREKA_CLIENT_ENABLED
+          value: "false"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-learning-assistant-svc
+spec:
+  selector:
+    app: ai-learning-assistant
+  ports:
+  - port: 8086
+    targetPort: 8086
+    nodePort: 30086
+  type: NodePort
